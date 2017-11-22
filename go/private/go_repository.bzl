@@ -63,7 +63,7 @@ def _go_repository_impl(ctx):
             '--vcs', ctx.attr.vcs,
             '--importpath', ctx.attr.importpath,
         ],
-        environment = fetch_repo_env,
+        environment = fetch_repo_env + ctx.attr.env,
     )
     if result.return_code:
       fail("failed to fetch %s: %s" % (ctx.name, result.stderr))
@@ -111,6 +111,9 @@ go_repository = repository_rule(
         "strip_prefix": attr.string(),
         "type": attr.string(),
         "sha256": attr.string(),
+
+        # Attributes for configuring fetch_repo
+        "env": attr.string_dict(),
 
         # Attributes for a repository that needs automatic build file generation
         "build_external": attr.string(default="external", values=["external", "vendored"]),
